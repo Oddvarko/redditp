@@ -891,6 +891,13 @@ $(function () {
         };
 
         var handleData = function (data) {
+            if (data && data.kind == 'wikipage') {
+                return handleDataWikipage(data);
+            }
+            return handleDataListing(data);
+        }
+
+        var handleDataListing = function (data) {
             var childrenAndAfter = embedit.processRedditJson(data);
             var children = childrenAndAfter.children;
             var after = childrenAndAfter.after;
@@ -1040,6 +1047,21 @@ $(function () {
             }
         });
     };
+
+    var handleDataWikipage = function (data) {
+        var content = data && data.data && data.data.content_html;
+        if (content) {
+            function htmlDecode(input) {
+                var doc = new DOMParser().parseFromString(input, "text/html");
+                return doc.documentElement.textContent;
+            }
+            //document.getElementById('pictureSlider').innerHTML = htmlDecode(content);
+            $('#pictureSlider').html(htmlDecode(content));
+            $('#pictureSlider').find('a').each(function() {
+                console.log($(this).attr('href'));
+            });
+        }
+    }
 
     var setupUrls = function () {
         rp.urlData = rp.getRestOfUrl();
