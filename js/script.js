@@ -804,7 +804,8 @@ $(function () {
     var decodeUrl = function (url) {
         return decodeURIComponent(url.replace(/\+/g, " "));
     };
-    rp.getRestOfUrl = function () {
+    rp.getRestOfUrl = function (href) {
+        href = href || window.location.href;
         // Separate to before the question mark and after
         // Detect predefined reddit url paths. If you modify this be sure to fix
         // .htaccess
@@ -812,7 +813,7 @@ $(function () {
 
         var regexS = "(/(?:(?:r/)|(?:imgur/a/)|(?:u(?:ser)?/)|(?:domain/)|(?:search))[^&#?]*)[?]?(.*)";
         var regex = new RegExp(regexS);
-        var results = regex.exec(window.location.href);
+        var results = regex.exec(href);
         //log(results);
         if (results === null) {
             return ["", ""];
@@ -1051,15 +1052,49 @@ $(function () {
     var handleDataWikipage = function (data) {
         var content = data && data.data && data.data.content_html;
         if (content) {
-            function htmlDecode(input) {
-                var doc = new DOMParser().parseFromString(input, "text/html");
-                return doc.documentElement.textContent;
+            // https://stackoverflow.com/questions/1912501/unescape-html-entities-in-javascript?answertab=scoredesc#tab-top
+            function unescapeHtmlEntities(input) {
+                var elem = document.createElement('textarea');
+                elem.innerHTML = input;
+                return elem.value;
             }
-            //document.getElementById('pictureSlider').innerHTML = htmlDecode(content);
-            $('#pictureSlider').html(htmlDecode(content));
-            $('#pictureSlider').find('a').each(function() {
-                console.log($(this).attr('href'));
+            $('#controlsDiv').hide()
+            $('#titleDiv').hide()
+            $('#prevButton').hide()
+            $('#nextButton').hide()
+
+            $('#pictureSlider').html(unescapeHtmlEntities(content));
+
+            var parts = window.location.href.split('index.html');
+            if (parts.length === 2) {
+                var base = parts[0] + 'index.html?';
+                $('#pictureSlider').find('a').each(function() {
+
+                    var href = $(this).attr('href');
+                    if (href.substring(0, 1) === '#') { // skip intra-page TOC links
+                        return;
+                    }
+                    var urlData = rp.getRestOfUrl(href);
+                    var subredditUrl = urlData[0];
+                    var getVars = urlData[1];
+                    var after = base + subredditUrl;
+                    if (getVars.length > 0) {
+                        after += '&' + getVars;
+                    }
+
+                    //console.log('before: ', $(this).attr('href'), 'after:', after);
+                    $(this).attr('href', after);
+                    
+                });
+            }
+
+            $('body').css('overflowY', 'auto'); 
+            $('#pictureSlider div').css({
+                position: 'relative',
+                width: 'auto',
+                height: 'auto',
             });
+            //console.log('Final HTML:', $('#pictureSlider').html());
         }
     }
 
