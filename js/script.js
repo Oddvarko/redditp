@@ -1088,13 +1088,10 @@ $(function () {
                 });
             }
 
-            $('body').css('overflowY', 'auto'); 
-            $('#pictureSlider div').css({
-                position: 'relative',
-                width: 'auto',
-                height: 'auto',
-            });
-            //console.log('Final HTML:', $('#pictureSlider').html());
+            // remove styles, but keep black background and white text
+            $('link[rel=stylesheet]').remove();
+            $('body').css('background-color', 'black');
+            $('body,a,h1,h2,h3,h4,h5,h6,footer').css('color', 'white');
         }
     }
 
