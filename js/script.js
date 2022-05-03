@@ -1064,10 +1064,11 @@ $(function () {
             $('#nextButton').hide()
 
             $('#pictureSlider').html(unescapeHtmlEntities(content));
-
-            var parts = window.location.href.split('index.html');
-            if (parts.length === 2) {
-                var base = parts[0] + 'index.html?';
+            var subredditUrl = rp.getRestOfUrl()[0];
+            var path = window.location.pathname + window.location.search;
+            var pos = path.indexOf(subredditUrl);
+            if (pos >= 0) {
+                var base = path.substring(0, pos);
                 $('#pictureSlider').find('a').each(function() {
 
                     var href = $(this).attr('href');
