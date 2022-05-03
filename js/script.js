@@ -878,6 +878,13 @@ $(function () {
             subredditUrl = "/r/" + rp.photos[0].subreddit;
         }
 
+        // Strip the hash part from getVars if it's present.
+        // This keeps a wiki page's table-of-contents hash links from breaking back navigation
+        lastHashPos = getVars.lastIndexOf('#');
+        if (lastHashPos >= 0) {
+            getVars = getVars.substring(0, lastHashPos);
+        }
+
         // Note that JSONP requests require `".json?jsonp=?"` here.
         var jsonUrl = embedit.redditBaseUrl + subredditUrl + ".json?" + (rp.session.after ? rp.session.after + "&" : "") + getVars;
 
