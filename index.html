@@ -110,6 +110,9 @@
             return false;
         }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.7.1/dash.all.min.js"
+        integrity="sha512-MIcFpSPLWmLSof4rgA6hcJ2LHRgT+2mF0sAv66F+R14JTddek4tNk++01LPCuV0BHjaB7DYHyIN97/A39N4MDA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript" src="js/jquery.touchwipe.js"></script>
     <script type="text/javascript" src="js/js.cookie.js"></script>
     <script type="text/javascript" src="js/ie_hacks.js"></script>
@@ -118,7 +121,6 @@
 </head>
 
 <body id="page">
-<div id="fullScreenOverlay"></div>
     <div class="prevArrow fadeOnIdle" title="The arrow keys work too" id="prevButton"></div>
     <div class="nextArrow fadeOnIdle" title="Try the arrow keys too" id="nextButton"></div>
 
@@ -170,7 +172,8 @@
                     <input class="checkbox" type="checkbox" name="autoNextSlide" id="autoNextSlide" value="Auto"
                         checked />
                     <label class="checkbox" for="autoNextSlide"> Auto-next</label>
-                    every <input type="text" name="timeToNextSlide" id="timeToNextSlide" value="5" size="2" /> seconds
+                    every <input type="text" name="timeToNextSlide" id="timeToNextSlide" inputmode="numeric" value="5"
+                        size="2" /> seconds
                 </li>
                 <li>
                     <input class="checkbox" type="checkbox" name="nsfw" id="nsfw" value="Auto" checked />
@@ -196,9 +199,12 @@
         <h2 id='navboxTitle'>
             <noscript>Javascript is required for redditp to work :(</noscript>
         </h2>
-        <h3><a id='navboxSubreddit' href="http://www.reddit.com">
+        <h3><b id='navboxSubreddit' href="http://www.reddit.com">
                 <noscript>Javascript is required for redditp to work :(</noscript>
-            </a></h3>
+            </b>
+            <a id='navboxGallery' style='padding-left:10px;'>
+            </a>
+        </h3>
     </div>
 
     <div id="recommend" style="display:none; text-align: center; margin: 10px; color: rgb(170, 170, 170);">

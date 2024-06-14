@@ -26,7 +26,7 @@ embedit.video = function (webmUrl, mp4Url) {
   // video. We can only circumvent that by putting the src
   // on the <video> tag :/
 
-  var video = $("<video autoplay playsinline loop />");
+  var video = $('<video autoplay playsinline loop controls="true" />');
   if (webmUrl) {
     video.append($("<source/>").attr("src", webmUrl));
   }
@@ -73,7 +73,7 @@ embedit.redGifConvert = function (url, embedFunc) {
   // https://github.com/ubershmekel/redditp/issues/138
   // Redgifs isn't allowing CORS requests to others.
   // access-control-allow-origin: https://www.redgifs.com
-  const iframeUrl = 'https://www.redgifs.com/ifr/'  + name;
+  const iframeUrl = 'https://www.redgifs.com/ifr/' + name;
   embedFunc($('<iframe src="' + iframeUrl + '" frameborder="0" scrolling="no" width="100%" height="100%" allowfullscreen="" style="position:absolute;"></iframe>'));
   return true;
 };
@@ -219,13 +219,19 @@ embedit.gfyUrlToId = function (url) {
 };
 
 embedit.redGifUrlToId = function (url) {
+  //https://redgifs.com/ifr/unhappyfluidgrassspider'
   var matches = url.match(/redgifs.com\/watch\/([\w-]+)\/?/i);
-
   if (matches && matches.length > 1) {
     return matches[1];
-  } else {
-    return false;
   }
+
+  matches = url.match(/redgifs.com\/ifr\/([\w-]+)\/?/i);
+  if (matches && matches.length > 1) {
+    return matches[1];
+  }
+
+  return false;
+
 };
 
 function isImageExtension(url) {
@@ -350,6 +356,9 @@ embedit.transformRedditData = function (pic) {
       // some crossposts don't have a pic.data.media obj?
       return false;
     }
+    // Note that this `DASH_audio.mp4` is now `DASH_AUDIO_128.mp4`.
+    // You can find it in the `.mpd` file, but I don't want to parse that.
+    // Instead - we'll use `dash.min.js` to create the video element.
     pic.sound =
       pic.url.substring(0, pic.url.lastIndexOf("/")) + "/DASH_audio.mp4";
   } else if (pic.url.search(/^http.*imgur.*gifv?$/) > -1) {
