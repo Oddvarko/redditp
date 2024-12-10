@@ -8,7 +8,7 @@ embedit.imageTypes = {
   redgif: "redgif",
 };
 
-embedit.redditBaseUrl = "http://www.reddit.com";
+embedit.redditBaseUrl = "http://old.reddit.com";
 
 if (typeof window === "undefined") {
   // eslint-disable-next-line no-redeclare
@@ -17,7 +17,7 @@ if (typeof window === "undefined") {
 
 if (window.location && window.location.protocol === "https:") {
   // page is secure
-  embedit.redditBaseUrl = "https://www.reddit.com";
+  embedit.redditBaseUrl = "https://old.reddit.com";
 }
 
 embedit.video = function (webmUrl, mp4Url) {
@@ -73,8 +73,14 @@ embedit.redGifConvert = function (url, embedFunc) {
   // https://github.com/ubershmekel/redditp/issues/138
   // Redgifs isn't allowing CORS requests to others.
   // access-control-allow-origin: https://www.redgifs.com
-  const iframeUrl = 'https://www.redgifs.com/ifr/' + name;
-  embedFunc($('<iframe src="' + iframeUrl + '" frameborder="0" scrolling="no" width="100%" height="100%" allowfullscreen="" style="position:absolute;"></iframe>'));
+  const iframeUrl = "https://www.redgifs.com/ifr/" + name;
+  embedFunc(
+    $(
+      '<iframe src="' +
+        iframeUrl +
+        '" frameborder="0" scrolling="no" width="100%" height="100%" allowfullscreen="" style="position:absolute;"></iframe>'
+    )
+  );
   return true;
 };
 
@@ -231,7 +237,6 @@ embedit.redGifUrlToId = function (url) {
   }
 
   return false;
-
 };
 
 function isImageExtension(url) {
@@ -366,17 +371,30 @@ embedit.transformRedditData = function (pic) {
     pic.url = pic.url.replace(http_prefix, https_prefix);
   } else if (pic.url.indexOf("reddit.com/gallery") >= 0) {
     console.log("GOTCHA!");
+
+    var dataSource;
     if (pic.data.gallery_data && pic.data.gallery_data.items) {
-      var firstItemId = pic.data.gallery_data.items[0].media_id;
-      var encodedUrl = pic.data.media_metadata[firstItemId]["s"]["u"];
-      pic.type = embedit.imageTypes.image;
-      if (encodedUrl === undefined) {
-        // some posts don't have the u key, but have gif and mp4 keys
-        encodedUrl = pic.data.media_metadata[firstItemId]["s"]["mp4"];
-        pic.type = embedit.imageTypes.gifv;
-      }
-      pic.url = decodeEntities(encodedUrl);
+      dataSource = pic.data;
+    } else if (
+      pic.data.crosspost_parent_list &&
+      pic.data.crosspost_parent_list[0] &&
+      pic.data.crosspost_parent_list[0].gallery_data &&
+      pic.data.crosspost_parent_list[0].gallery_data.items
+    ) {
+      // Grab the first image from the crosspost parent
+      dataSource = pic.data.crosspost_parent_list[0];
     }
+
+    var firstItemId = dataSource.gallery_data.items[0].media_id;
+    var encodedUrl = dataSource.media_metadata[firstItemId]["s"]["u"];
+
+    pic.type = embedit.imageTypes.image;
+    if (encodedUrl === undefined) {
+      // some posts don't have the u key, but have gif and mp4 keys
+      encodedUrl = dataSource.media_metadata[firstItemId]["s"]["mp4"];
+      pic.type = embedit.imageTypes.gifv;
+    }
+    pic.url = decodeEntities(encodedUrl);
     console.log(pic.url);
   } else if (isImageExtension(pic.url)) {
     // simple image
