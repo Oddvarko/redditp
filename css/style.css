@@ -100,33 +100,39 @@ label.checkbox { font-weight: bold; }
 
 .prevArrow {
     position: absolute;
-    top: 50%;
+    top: 0;
     left: 10px;
-    width: 0; 
-    height: 0; 
-    
+    width: 20vw; 
+    height: 100%; 
+
+    /*
     border-top: 25px solid transparent;
     border-bottom: 25px solid transparent; 
     border-right: 50px solid white; 
+    */
+    background: white;
 	z-index:2;
-    opacity: 0.8;
+    opacity: 0.0;
     
     cursor: hand; cursor: pointer;
 }
 
 .nextArrow {
     position: absolute;
-    top: 50%;
+    top: 0;
     right: 10px;
-    width: 0; 
-    height: 0; 
-    
+    width: 20vw; 
+    height: 100%; 
+
+    /*
     border-top: 25px solid transparent;
     border-bottom: 25px solid transparent; 
     border-left: 50px solid white; 
+    */
+    background: white;
     z-index:2;
-    opacity: 0.8;
-    cursor: hand; cursor: pointer;
+    opacity: 0.0;
+    /* cursor: hand; cursor: pointer; */
 }
 
 #fullScreenButton {
