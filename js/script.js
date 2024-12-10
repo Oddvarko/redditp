@@ -335,6 +335,11 @@ $(function () {
 
         $('#prevButton').click(prevSlide);
         $('#nextButton').click(nextSlide);
+
+        $('#middleBit').click(function() {
+            $('#controlsDiv .collapser').click();
+            $('#titleDiv .collapser').click();
+        });
     };
 
     var addNumberButton = function (numberButton) {
