@@ -115,6 +115,10 @@ label.checkbox { font-weight: bold; }
     opacity: 0.0;
     
     cursor: hand; cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .nextArrow {
@@ -133,6 +137,10 @@ label.checkbox { font-weight: bold; }
     z-index:2;
     opacity: 0.0;
     /* cursor: hand; cursor: pointer; */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .middleBit {
@@ -145,6 +153,10 @@ label.checkbox { font-weight: bold; }
     background: white;
     z-index:2;
     opacity: 0.0;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 #fullScreenButton {
