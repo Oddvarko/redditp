@@ -7,8 +7,37 @@
       name="description"
       content="404 - A fullscreen presentation or slide show of reddit. RedditP"
     />
-    <link rel="shortcut icon" href="/images/favicon.png" />
-    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <!--
+      Compute a <base> so relative asset/link URLs work whether redditp is
+      served from a domain root (e.g. redditp.com/r/pics, where index.html is
+      served for a route URL) or from a project subpath (e.g.
+      user.github.io/redditp/). We derive the app root from the current path by
+      stripping any SPA route segment or trailing file, so no repo name or path
+      is ever hardcoded.
+
+      This MUST run before any relative URL and uses document.write so the
+      <base> lands in the parser's token stream ahead of the favicon/css/script
+      tags below; injecting it via appendChild instead loses a race with the
+      preload scanner, which would resolve those URLs against the document URL.
+
+      KEEP IN SYNC: the identical block lives at the top of index.html and 404.html. Edit both.
+    -->
+    <script type="text/javascript">
+      (function () {
+        var path = window.location.pathname;
+        // If the path contains an SPA route segment, the app root is
+        // everything up to (and including) the slash before it. Otherwise
+        // it's the directory of the current document.
+        var m = path.match(/\/(?:r|u|user|domain|search|imgur)(?:\/|$)/);
+        var root = m
+          ? path.slice(0, m.index + 1)
+          : path.replace(/[^/]*$/, "") || "/";
+        document.write('<base href="' + window.location.origin + root + '">');
+      })();
+    </script>
+
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(["_setAccount", "UA-4533496-15"]);
@@ -32,28 +61,28 @@
     <p>Maybe try these presentations instead:</p>
     <ul>
       <li>
-        <a href="/r/earthporn">earthporn</a>
+        <a href="?/r/earthporn">earthporn</a>
       </li>
       <li>
-        <a href="/r/aww">aww</a>
+        <a href="?/r/aww">aww</a>
       </li>
       <li>
-        <a href="/r/foodporn">foodporn</a>
+        <a href="?/r/foodporn">foodporn</a>
       </li>
       <li>
-        <a href="/r/funny">funny</a>
+        <a href="?/r/funny">funny</a>
       </li>
       <li>
-        <a href="/r/gonewild">gonewild</a>
+        <a href="?/r/gonewild">gonewild</a>
       </li>
       <li>
-        <a href="/r/spaceporn">spaceporn</a>
+        <a href="?/r/spaceporn">spaceporn</a>
       </li>
       <li>
-        <a href="/r/gifs">gifs</a>
+        <a href="?/r/gifs">gifs</a>
       </li>
       <li>
-        <a href="/r/all">all</a>
+        <a href="?/r/all">all</a>
       </li>
     </ul>
 
@@ -71,20 +100,31 @@
     </p>
 
     <script>
-      // Fix github pages 404-ing on every subreddit url like https://gh.redditp.com/r/gifs
+      // Fix static hosts (e.g. GitHub Pages) 404-ing on SPA routes like
+      // https://user.github.io/redditp/r/gifs. We send these to the app root
+      // index.html with the original route preserved in the query string, so
+      // script.js's getRestOfUrl() (which scans the whole href) can pick it
+      // up. Genuine 404s with no route segment fall through to this page.
       // Inspired by https://github.com/rafgraph/spa-github-pages/blob/gh-pages/404.html
-      if (
-        window.location.host === "gh.redditp.com" &&
-        window.location.pathname !== "/"
-      ) {
-        // Go to the root page, keep the GET parameters
-        // TODO: avoid adding extra `/?&` characters every time
-        window.location =
-          "/?" +
-          window.location.pathname +
-          "&" +
-          window.location.search.substring(1);
-      }
+      (function () {
+        var path = window.location.pathname;
+        var m = path.match(/\/(?:r|u|user|domain|search|imgur)(?:\/|$)/);
+        if (!m) {
+          return;
+        }
+        // App root is everything before the route segment (no repo name
+        // hardcoded); the rest is the route we replay via the query string.
+        var root = path.slice(0, m.index + 1);
+        var route = path.slice(m.index);
+        var search = window.location.search.substring(1);
+        window.location.replace(
+          root +
+            "?" +
+            route +
+            (search ? "&" + search : "") +
+            window.location.hash,
+        );
+      })();
     </script>
   </body>
 </html>

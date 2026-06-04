@@ -719,7 +719,10 @@ $(function () {
     console.log(imageIndex);
     var photo = rp.photos[imageIndex];
     var subreddit = "/r/" + photo.subreddit;
-    var user = "/user/" + photo.userLink + "/submitted";
+    // Use the ?-query route form so the link resolves to a real file on any
+    // static host (e.g. /redditp/?/user/.../submitted) instead of a clean
+    // path that 404s without server rewrites or a 404.html fallback.
+    var user = "?/user/" + photo.userLink + "/submitted";
 
     $("#navboxTitle").html(photo.title);
     $("#navboxSubreddit")
@@ -730,7 +733,9 @@ $(function () {
       .attr("href", photo.commentsLink)
       .attr("title", "Comments on reddit");
     $("#navboxUser")
-      .attr("href", window.location.origin + user)
+      // Resolve against the document base so the link points at redditp's
+      // own user slideshow whether served from a root or a subpath.
+      .attr("href", new URL(user, document.baseURI).href)
       .attr("user", "User on reddit");
     if (photo.galleryItem) {
       $("#navboxGallery").text(
@@ -745,7 +750,7 @@ $(function () {
     await toggleNumberButton(imageIndex, true);
   };
 
-  var playButton = $('<img id="playButton" src="/images/play.svg" />');
+  var playButton = $('<img id="playButton" src="images/play.svg" />');
   playButton.click(function () {
     if ($("video")[0]) {
       $("video")[0].play();
@@ -1066,7 +1071,7 @@ $(function () {
       // live Reddit JSONP requests and serves a deterministic fixture
       // from `/test-data/<name>.json`.
       $.ajax({
-        url: "/test-data/" + mockFixtureName + ".json",
+        url: "test-data/" + mockFixtureName + ".json",
         dataType: "json",
         success: function (data) {
           rp.session.mockDataLoaded = true;

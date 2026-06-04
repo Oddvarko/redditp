@@ -13,11 +13,41 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="format-detection" content="date=no" />
     <meta name="format-detection" content="address=no" />
-    <link rel="shortcut icon" href="/images/favicon.png" />
+
+    <!--
+      Compute a <base> so relative asset/link URLs work whether redditp is
+      served from a domain root (e.g. redditp.com/r/pics, where index.html is
+      served for a route URL) or from a project subpath (e.g.
+      user.github.io/redditp/). We derive the app root from the current path by
+      stripping any SPA route segment or trailing file, so no repo name or path
+      is ever hardcoded.
+
+      This MUST run before any relative URL and uses document.write so the
+      <base> lands in the parser's token stream ahead of the favicon/css/script
+      tags below; injecting it via appendChild instead loses a race with the
+      preload scanner, which would resolve those URLs against the document URL.
+
+      KEEP IN SYNC: the identical block lives at the top of index.html and 404.html. Edit both.
+    -->
+    <script type="text/javascript">
+      (function () {
+        var path = window.location.pathname;
+        // If the path contains an SPA route segment, the app root is
+        // everything up to (and including) the slash before it. Otherwise
+        // it's the directory of the current document.
+        var m = path.match(/\/(?:r|u|user|domain|search|imgur)(?:\/|$)/);
+        var root = m
+          ? path.slice(0, m.index + 1)
+          : path.replace(/[^/]*$/, "") || "/";
+        document.write('<base href="' + window.location.origin + root + '">');
+      })();
+    </script>
+
+    <link rel="shortcut icon" href="images/favicon.png" />
 
     <!-- no-referrer because of https://github.com/ubershmekel/redditp/issues/137 -->
     <meta name="referrer" content="no-referrer" />
-    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
 
     <!-- Google error reporting -->
     <script
@@ -71,7 +101,7 @@
       integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
       crossorigin="anonymous"
     ></script>
-    <script type="text/javascript" src="/js/toast.js"></script>
+    <script type="text/javascript" src="js/toast.js"></script>
     <script>
       (function (i, s, o, g, r, a, m) {
         i["GoogleAnalyticsObject"] = r;
@@ -122,11 +152,11 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <script type="text/javascript" src="/js/jquery.touchwipe.js"></script>
-    <script type="text/javascript" src="/js/js.cookie.js"></script>
-    <script type="text/javascript" src="/js/ie_hacks.js"></script>
-    <script type="text/javascript" src="/js/EmbedIt.js"></script>
-    <script type="text/javascript" src="/js/script.js"></script>
+    <script type="text/javascript" src="js/jquery.touchwipe.js"></script>
+    <script type="text/javascript" src="js/js.cookie.js"></script>
+    <script type="text/javascript" src="js/ie_hacks.js"></script>
+    <script type="text/javascript" src="js/EmbedIt.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
   </head>
 
   <body id="page">
@@ -242,7 +272,7 @@
             <label class="checkbox" for="sound"> sound</label>
 
             <img
-              src="/images/fullscreen.png"
+              src="images/fullscreen.png"
               id="fullScreenButton"
               alt="Fullscreen"
             />
@@ -282,28 +312,28 @@
       <p>Maybe try these presentations instead:</p>
       <ul>
         <li>
-          <a href="/r/earthporn">earthporn</a>
+          <a href="?/r/earthporn">earthporn</a>
         </li>
         <li>
-          <a href="/r/aww">aww</a>
+          <a href="?/r/aww">aww</a>
         </li>
         <li>
-          <a href="/r/foodporn">foodporn</a>
+          <a href="?/r/foodporn">foodporn</a>
         </li>
         <li>
-          <a href="/r/funny">funny</a>
+          <a href="?/r/funny">funny</a>
         </li>
         <li>
-          <a href="/r/gonewild">gonewild</a>
+          <a href="?/r/gonewild">gonewild</a>
         </li>
         <li>
-          <a href="/r/spaceporn">spaceporn</a>
+          <a href="?/r/spaceporn">spaceporn</a>
         </li>
         <li>
-          <a href="/r/gifs">gifs</a>
+          <a href="?/r/gifs">gifs</a>
         </li>
         <li>
-          <a href="/r/all">all</a>
+          <a href="?/r/all">all</a>
         </li>
       </ul>
 
