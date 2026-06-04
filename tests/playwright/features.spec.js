@@ -17,7 +17,7 @@ test.describe("NSFW toggle", () => {
     await expect(page.locator("#numberButton2")).toHaveClass(/over18/);
 
     // With nsfw ON, next from slide 1 should land on slide 2 (NSFW)
-    await page.locator("#nextButton").click();
+    await page.locator("#nextNavZone").click();
     await expect(page.locator("#navboxTitle")).toHaveText("NSFW Slide Two");
     await expect(page.locator("#numberButton2")).toHaveClass(/active/);
   });
@@ -35,7 +35,7 @@ test.describe("NSFW toggle", () => {
       .toBe(false);
 
     // Next from slide 1 should skip slide 2 (NSFW) and land on slide 3
-    await page.locator("#nextButton").click();
+    await page.locator("#nextNavZone").click();
     await expect(page.locator("#navboxTitle")).toHaveText("SFW Slide Three");
     await expect(page.locator("#numberButton3")).toHaveClass(/active/);
   });
@@ -237,10 +237,10 @@ test.describe("Gallery navigation", () => {
     await page.locator("#numberButton2").click();
     await expect(page.locator("#navboxGallery")).toHaveText("Gallery: 1/3");
 
-    await page.locator("#nextButton").click();
+    await page.locator("#nextNavZone").click();
     await expect(page.locator("#navboxGallery")).toHaveText("Gallery: 2/3");
 
-    await page.locator("#nextButton").click();
+    await page.locator("#nextNavZone").click();
     await expect(page.locator("#navboxGallery")).toHaveText("Gallery: 3/3");
   });
 

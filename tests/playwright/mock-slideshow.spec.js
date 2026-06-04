@@ -21,7 +21,7 @@ test("loads mock slideshow, requests more on the last slide, and wraps back to s
     })
     .toBe(1);
 
-  await page.locator("#nextButton").click();
+  await page.locator("#nextNavZone").click();
 
   await expect(page.locator("#navboxTitle")).toHaveText(
     "Playwright Mock Slide Two",
@@ -53,7 +53,7 @@ test("loads mock slideshow, requests more on the last slide, and wraps back to s
     })
     .toBe(2);
 
-  await page.locator("#nextButton").click();
+  await page.locator("#nextNavZone").click();
 
   await expect(page.locator("#navboxTitle")).toHaveText(
     "Playwright Mock Slide One",

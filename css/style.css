@@ -218,37 +218,25 @@ label.checkbox {
   cursor: pointer;
 }
 
-.prevArrow {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  width: 0;
-  height: 0;
-
-  border-top: 25px solid transparent;
-  border-bottom: 25px solid transparent;
-  border-right: 50px solid white;
-  z-index: 2;
-  opacity: 0.8;
-
-  cursor: hand;
+/*
+  Invisible prev/next tap zones. Default geometry covers the left/right 20% of
+  the layout viewport over the middle 50% vertically. When the page is
+  pinch-zoomed, JS overrides top/height/left/width inline to track the visual
+  viewport instead, so the zones stay anchored to the region the user sees.
+*/
+.navZone {
+  position: fixed;
+  top: 25%;
+  height: 50%;
+  width: 20%;
+  z-index: 1;
   cursor: pointer;
 }
-
-.nextArrow {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  width: 0;
-  height: 0;
-
-  border-top: 25px solid transparent;
-  border-bottom: 25px solid transparent;
-  border-left: 50px solid white;
-  z-index: 2;
-  opacity: 0.8;
-  cursor: hand;
-  cursor: pointer;
+#prevNavZone {
+  left: 0;
+}
+#nextNavZone {
+  right: 0;
 }
 
 #fullScreenButton {

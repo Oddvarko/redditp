@@ -160,16 +160,15 @@
   </head>
 
   <body id="page">
-    <div
-      class="prevArrow fadeOnIdle"
-      title="The arrow keys work too"
-      id="prevButton"
-    ></div>
-    <div
-      class="nextArrow fadeOnIdle"
-      title="Try the arrow keys too"
-      id="nextButton"
-    ></div>
+    <!--
+      Invisible tap zones for prev/next navigation. They cover the left and
+      right 20% of the screen, restricted to the middle 50% vertically so taps
+      near the corners (e.g. the controls) are left alone. JS keeps them pinned
+      to the visual viewport so they still track the visible region when the
+      page is pinch-zoomed.
+    -->
+    <div id="prevNavZone" class="navZone"></div>
+    <div id="nextNavZone" class="navZone"></div>
 
     <div id="controlsDiv" class="navbox fadeOnIdle">
       <div class="collapser" data-openstate="open">-</div>

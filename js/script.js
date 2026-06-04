@@ -386,8 +386,48 @@ $(function () {
 
     $("#timeToNextSlide").keyup(updateTimeToNextSlide);
 
-    $("#prevButton").click(prevSlide);
-    $("#nextButton").click(nextSlide);
+    $("#prevNavZone").click(prevSlide);
+    $("#nextNavZone").click(nextSlide);
+    setupNavZones();
+  };
+
+  // Keep the prev/next tap zones pinned to the visual viewport so they cover
+  // the left/right 20% (over the middle 50% vertically) of whatever the user
+  // can actually see — including when the page is pinch-zoomed. Without this,
+  // the fixed-position zones would stay glued to the layout viewport and drift
+  // off-screen once you zoom in.
+  var setupNavZones = function () {
+    var vv = window.visualViewport;
+    if (!vv) {
+      // No visualViewport API (older browsers) — the CSS percentage geometry
+      // already covers the unzoomed case, so leave the zones as-is.
+      return;
+    }
+
+    var updateNavZones = function () {
+      var zoneWidth = vv.width * 0.2;
+      var zoneTop = vv.offsetTop + vv.height * 0.25;
+      var zoneHeight = vv.height * 0.5;
+
+      $("#prevNavZone").css({
+        left: vv.offsetLeft + "px",
+        right: "auto",
+        top: zoneTop + "px",
+        width: zoneWidth + "px",
+        height: zoneHeight + "px",
+      });
+      $("#nextNavZone").css({
+        left: vv.offsetLeft + vv.width - zoneWidth + "px",
+        right: "auto",
+        top: zoneTop + "px",
+        width: zoneWidth + "px",
+        height: zoneHeight + "px",
+      });
+    };
+
+    vv.addEventListener("resize", updateNavZones);
+    vv.addEventListener("scroll", updateNavZones);
+    updateNavZones();
   };
 
   var addNumberButton = function (numberButton) {
